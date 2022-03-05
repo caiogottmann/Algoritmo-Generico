@@ -1,9 +1,10 @@
 const GERACOES = 5;
 const INDIVIDUOS = 4;
-const TAXA_CROSSOVER = 0.6;
-const TAXA_MUTACAO = 0.01;
+const TAXA_CROSSOVER = 0.7;
+const TAXA_MUTACAO = 0.5;
 const LIMITE_INFERIOR = -10;
 const LIMITE_SUPERIOR = 10;
+const TAMANHO_BINARIO = 5;
 
 function aptidao(x) {
   return Math.pow(x, 2) + 3 * x + 4;
@@ -35,28 +36,22 @@ class Individuo {
 
 class Genetico {
   constructor() {
-    this.size = INDIVIDUOS;
-    this.geracoes = GERACOES;
-    this.numPopulacoes = -1;
-    this.crossover = TAXA_CROSSOVER;
-    this.mutacao = TAXA_MUTACAO;
-    this.limiteInferior = LIMITE_INFERIOR;
-    this.limiteSuperior = LIMITE_SUPERIOR;
+    this.numPopulacoes = -1; // não é constante
     this.populacao = [];
 
     this.gerarPopulacao();
     this.torneio();
-    //
+    this.selecao();
+    console.log(this.mutacao(this.populacao[this.numPopulacoes][0]))
   }
 
   gerarPopulacao() {
     this.numPopulacoes++;
     const valores = [];
     let totalFn = 0;
-    for (let index = 0; index < this.size; index++) {
+    for (let index = 0; index < INDIVIDUOS; index++) {
       const valorAux = Math.floor(
-        Math.random() * (this.limiteSuperior - this.limiteInferior) +
-          this.limiteInferior
+        Math.random() * (LIMITE_SUPERIOR - LIMITE_INFERIOR) + LIMITE_INFERIOR
       );
       totalFn += aptidao(valorAux);
       valores.push(valorAux);
@@ -75,9 +70,25 @@ class Genetico {
     );
   }
 
+  crossover(pai, mae) {
+    let filho1 = pai;
+    let filho2 = mae;
+    // if (Math.random() <= TAXA_CROSSOVER) {
+    const index = Math.floor(Math.random() * TAMANHO_BINARIO + 1);
+    // const arrayAux = filho1.slice(0, 2);
+    console.log("filho1", filho1);
+    // console.log("arrayAux", arrayAux);
+    // }
+    return { filho1, filho2 };
+  }
+
   selecao() {
     const populacaoAux = [...this.populacao[this.numPopulacoes]];
-    // if(Math.random())
+    const pai = this.torneio();
+    const mae = this.torneio();
+    const { filho1, filho2 } = this.crossover(pai, mae);
+    //Mutacao sendo chamado daqui apenas para teste
+    
   }
 
   getMelhor(index1, index2) {
@@ -90,24 +101,40 @@ class Genetico {
   }
 
   torneio() {
-    //Verificar para saber como pegar os dois pelo torneio
-
-    console.log("iha", this.populacao[this.numPopulacoes]);
-    const indexEscolha1 = Math.floor(Math.random() * this.size);
+    // console.log("iha", this.populacao[this.numPopulacoes]);
+    const indexEscolha1 = Math.floor(Math.random() * INDIVIDUOS);
     let indexEscolha2 = 0;
     do {
-      indexEscolha2 = Math.floor(Math.random() * this.size);
+      indexEscolha2 = Math.floor(Math.random() * INDIVIDUOS);
     } while (indexEscolha1 === indexEscolha2);
 
-    console.log(indexEscolha1);
-    console.log(indexEscolha2);
+    // console.log(indexEscolha1);
+    // console.log(indexEscolha2);
     // console.log(
     //   this.populacao[this.numPopulacoes].find(
     //     (individuo) => percEscolha >= individuo.percSelecao
     //   )
     // );
-    console.log("best", this.getMelhor(indexEscolha1, indexEscolha2));
+    // console.log("best", this.getMelhor(indexEscolha1, indexEscolha2));
     return this.getMelhor(indexEscolha1, indexEscolha2);
+  }
+
+  mutacao(param1) {
+    console.log('passei aqui amigao')
+   console.log(param1)
+    let result = [];
+    //Necessário passar um individuo para o método
+    for (let i = 0; i < param1.cromossomo.length; i++) {
+      if (Math.random() <= 0.1) {
+        if (param1.cromossomo[i] == "1") {
+          result.push("0")
+        } else result.push("1")
+      }else result.push(param1.cromossomo[i])
+    }
+
+    //param1.cromossomo = [...result];
+    
+    return result
   }
 }
 
