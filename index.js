@@ -137,7 +137,43 @@ class Genetico {
   }
 
   
-  
+  novaPopulacao(novos){
+    this.numPopulacoes++;
+    const valores = [];
+    let totalFn = 0;
+    let newPopulation = [pai,mae,filho1,filho2]
+    
+    for(let i=0; i < newPopulation.length; i++){
+      newPopulation[i].valor += newPopulation[i].cromossomo.map(e =>{
+        //Calcular o X dos cromossomos
+    })
+
+    newPopulation[i].aptidao = aptidao(newPopulation[i].valor)
+  }
+
+  // Calculo da probabilidade
+    let sumFx = 0
+    newPopulation.map(e =>{
+      sumFx += e.valor
+
+  })
+
+  newPopulation.map(e =>{
+    e.percSelecao = e.valor / sumFx
+  })
+
+    
+    this.populacao.push(
+      valores.map(
+        (valor) =>
+          new Individuo(valor, aptidao(valor), aptidao(valor) / totalFn)
+      )
+    );
+
+    this.populacao[this.numPopulacoes].sort(
+      (a, b) => b.percSelecao - a.percSelecao
+    );
+  }
   //Nova rodada
     //Pegar os dois melhores da anterior + os dois filhos gerados
     //No população
@@ -151,7 +187,7 @@ new Genetico();
 
 
 function conversorBinarioToDecimal(binario){
-  
+  //['1','1','0','1']
   let dec = 0;
   for (let c = 0; c < binario.length; c++){
    console.log(Math.pow(2, c) * binario[binario.length - c - 1])
