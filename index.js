@@ -69,6 +69,7 @@ class Genetico {
     this.populacao[this.numPopulacoes].sort(
       (a, b) => b.percSelecao - a.percSelecao
     );
+    return this.populacao
   }
 
   crossover(pai, mae) {
@@ -84,12 +85,16 @@ class Genetico {
   }
 
   selecao() {
-    const populacaoAux = [...this.populacao[this.numPopulacoes]];
     const pai = this.torneio();
-    const mae = this.torneio();
+    let mae = {};
+    do {
+      mae = this.torneio();
+    } while (pai == mae);
+
     const { filho1, filho2 } = this.crossover(pai, mae);
-    //Mutacao sendo chamado daqui apenas para teste
-    
+
+    this.mutacao(filho1);
+    this.mutacao(filho2);
   }
 
   getMelhor(index1, index2) {
@@ -138,17 +143,20 @@ class Genetico {
 
   
   novaPopulacao(novos){
-    this.numPopulacoes++;
-    const valores = [];
+    //this.numPopulacoes++;
+    this.selecao()
+
     let totalFn = 0;
-    let newPopulation = [pai,mae,filho1,filho2]
+    console.log("estou imprimindo aqui")
+    let newPopulation = this.populacao
+    console.log(newPopulation)
     
     for(let i=0; i < newPopulation.length; i++){
-      newPopulation[i].valor += newPopulation[i].cromossomo.map(e =>{
+      newPopulation[this.numPopulacoes][i].valor += newPopulation[this.numPopulacoes].cromossomo.map(e =>{
         //Calcular o X dos cromossomos
     })
 
-    newPopulation[i].aptidao = aptidao(newPopulation[i].valor)
+    newPopulation[this.numPopulacoes][i].aptidao = aptidao(newPopulation[this.numPopulacoes][i].valor)
   }
 
   // Calculo da probabilidade
@@ -162,25 +170,20 @@ class Genetico {
     e.percSelecao = e.valor / sumFx
   })
 
-    
+  /*   
     this.populacao.push(
       valores.map(
         (valor) =>
           new Individuo(valor, aptidao(valor), aptidao(valor) / totalFn)
       )
     );
-
-    this.populacao[this.numPopulacoes].sort(
+ */
+    newPopulation.sort(
       (a, b) => b.percSelecao - a.percSelecao
     );
+    return newPopulation
   }
-  //Nova rodada
-    //Pegar os dois melhores da anterior + os dois filhos gerados
-    //No população
-  //Calcular o novo fx aptidao
-  //calcular a prob de selecao fxi / for(fxk)
-
-
+  
 }
 
 new Genetico();
@@ -195,3 +198,19 @@ function conversorBinarioToDecimal(binario){
   }
   console.log(dec);
 }
+
+
+
+function exec(){
+    let n = 0;
+    const genetico = new Genetico();
+    let populacao = genetico.gerarPopulacao()
+    do {
+      let auxiliar = populacao
+      populacao = genetico.novaPopulacao(auxiliar);
+      n++;
+    } while (n < GERACOES);
+  }
+
+
+exec()
