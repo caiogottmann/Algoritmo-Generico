@@ -120,12 +120,10 @@ class Genetico {
   }
 
   mutacao(param1) {
-    console.log('passei aqui amigao')
-   console.log(param1)
     let result = [];
     //Necessário passar um individuo para o método
     for (let i = 0; i < param1.cromossomo.length; i++) {
-      if (Math.random() <= 0.1) {
+      if (Math.random() <= 0.01) {
         if (param1.cromossomo[i] == "1") {
           result.push("0")
         } else result.push("1")
