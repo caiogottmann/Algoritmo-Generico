@@ -135,6 +135,16 @@ class Genetico {
     
     return result
   }
+
+  
+  
+  //Nova rodada
+    //Pegar os dois melhores da anterior + os dois filhos gerados
+    //No população
+  //Calcular o novo fx aptidao
+  //calcular a prob de selecao fxi / for(fxk)
+
+
 }
 
 new Genetico();
