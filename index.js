@@ -43,6 +43,7 @@ class Genetico {
     this.torneio();
     this.selecao();
     console.log(this.mutacao(this.populacao[this.numPopulacoes][0]))
+    conversorBinarioToDecimal('1000')
   }
 
   gerarPopulacao() {
@@ -137,3 +138,14 @@ class Genetico {
 }
 
 new Genetico();
+
+
+function conversorBinarioToDecimal(binario){
+  
+  let dec = 0;
+  for (let c = 0; c < binario.length; c++){
+   console.log(Math.pow(2, c) * binario[binario.length - c - 1])
+    dec += Math.pow(2, c) * binario[binario.length - c - 1]; //calcula para pegar do último ao primeiro
+  }
+  console.log(dec);
+}
