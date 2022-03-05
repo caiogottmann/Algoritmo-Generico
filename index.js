@@ -7,6 +7,7 @@ const LIMITE_SUPERIOR = 10;
 const TAMANHO_BINARIO = 5;
 
 function aptidao(x) {
+  console.log("x", x)
   return Math.pow(x, 2) + 3 * x + 4;
 }
 
@@ -43,7 +44,7 @@ class Genetico {
     this.torneio();
     this.selecao();
     console.log(this.mutacao(this.populacao[this.numPopulacoes][0]))
-    conversorBinarioToDecimal('1000')
+    
   }
 
   gerarPopulacao() {
@@ -143,20 +144,18 @@ class Genetico {
 
   
   novaPopulacao(novos){
-    //this.numPopulacoes++;
+    this.numPopulacoes++;
     this.selecao()
 
     let totalFn = 0;
-    console.log("estou imprimindo aqui")
     let newPopulation = this.populacao
+    console.log("estou imprimindo aqui")
     console.log(newPopulation)
+    console.log(this.numPopulacoes)
     
-    for(let i=0; i < newPopulation.length; i++){
-      newPopulation[this.numPopulacoes][i].valor += newPopulation[this.numPopulacoes].cromossomo.map(e =>{
-        //Calcular o X dos cromossomos
-    })
-
-    newPopulation[this.numPopulacoes][i].aptidao = aptidao(newPopulation[this.numPopulacoes][i].valor)
+    for(let i=0; i < 4; i++){
+      newPopulation[this.numPopulacoes][i].valor = conversorBinarioToDecimal(newPopulation[this.numPopulacoes][i].cromossomo)
+      newPopulation[this.numPopulacoes][i].aptidao = aptidao(newPopulation[this.numPopulacoes][i].valor)
   }
 
   // Calculo da probabilidade
@@ -181,6 +180,7 @@ class Genetico {
     newPopulation.sort(
       (a, b) => b.percSelecao - a.percSelecao
     );
+    console.log('passei aqui', newPopulation)
     return newPopulation
   }
   
@@ -190,13 +190,13 @@ new Genetico();
 
 
 function conversorBinarioToDecimal(binario){
-  //['1','1','0','1']
+  
   let dec = 0;
   for (let c = 0; c < binario.length; c++){
-   console.log(Math.pow(2, c) * binario[binario.length - c - 1])
+   
     dec += Math.pow(2, c) * binario[binario.length - c - 1]; //calcula para pegar do último ao primeiro
   }
-  console.log(dec);
+  return dec
 }
 
 
@@ -209,6 +209,7 @@ function exec(){
       let auxiliar = populacao
       populacao = genetico.novaPopulacao(auxiliar);
       n++;
+      console.log(n)
     } while (n < GERACOES);
   }
 
