@@ -7,7 +7,7 @@ const LIMITE_SUPERIOR = 10;
 const TAMANHO_BINARIO = 5;
 
 function aptidao(x) {
-  console.log("x", x)
+  
   return Math.pow(x, 2) + 3 * x + 4;
 }
 
@@ -29,7 +29,7 @@ class Individuo {
     binary = binary.padStart(4, "0");
     if (number >= 0) binary = `0${binary}`;
     else binary = `1${binary}`;
-    console.log(binary.split(""));
+    //console.log(binary.split(""));
     // console.log(binary);
     return binary.split("");
   }
@@ -40,10 +40,10 @@ class Genetico {
     this.numPopulacoes = -1; // não é constante
     this.populacao = [];
 
-    this.gerarPopulacao();
-    this.torneio();
-    this.selecao();
-    console.log(this.mutacao(this.populacao[this.numPopulacoes][0]))
+    //this.gerarPopulacao();
+    //this.torneio();
+    //this.selecao();
+    //console.log(this.mutacao(this.populacao[this.numPopulacoes][0]))
     
   }
 
@@ -79,13 +79,14 @@ class Genetico {
     // if (Math.random() <= TAXA_CROSSOVER) {
     const index = Math.floor(Math.random() * TAMANHO_BINARIO + 1);
     // const arrayAux = filho1.slice(0, 2);
-    console.log("filho1", filho1);
+    //console.log("filho1", filho1);
     // console.log("arrayAux", arrayAux);
     // }
     return { filho1, filho2 };
   }
 
   selecao() {
+    console.log('entrei no selecao')
     const pai = this.torneio();
     let mae = {};
     do {
@@ -93,12 +94,14 @@ class Genetico {
     } while (pai == mae);
 
     const { filho1, filho2 } = this.crossover(pai, mae);
-
+    console.log('To entrando no mutacao aqui nesse ponto')
+    console.log(filho1, ' ', filho2)
     this.mutacao(filho1);
     this.mutacao(filho2);
   }
 
   getMelhor(index1, index2) {
+    
     if (
       this.populacao[this.numPopulacoes][index1].aptidao >=
       this.populacao[this.numPopulacoes][index2].aptidao
@@ -114,7 +117,7 @@ class Genetico {
     do {
       indexEscolha2 = Math.floor(Math.random() * INDIVIDUOS);
     } while (indexEscolha1 === indexEscolha2);
-
+    console.log(indexEscolha1, ' escolha ', indexEscolha2)
     // console.log(indexEscolha1);
     // console.log(indexEscolha2);
     // console.log(
@@ -144,19 +147,28 @@ class Genetico {
 
   
   novaPopulacao(novos){
-    this.numPopulacoes++;
     this.selecao()
+    this.numPopulacoes++;
 
     let totalFn = 0;
     let newPopulation = this.populacao
-    console.log("estou imprimindo aqui")
-    console.log(newPopulation)
-    console.log(this.numPopulacoes)
+    //console.log("estou imprimindo aqui")
+    //console.log(newPopulation)
+   // console.log('Imprimindo populacao,', this.populacao[0][3])
+    this.populacao.push(newPopulation)
     
-    for(let i=0; i < 4; i++){
-      newPopulation[this.numPopulacoes][i].valor = conversorBinarioToDecimal(newPopulation[this.numPopulacoes][i].cromossomo)
-      newPopulation[this.numPopulacoes][i].aptidao = aptidao(newPopulation[this.numPopulacoes][i].valor)
-  }
+    
+    ERRO TA NESSE FOR
+    //Problema esta nesse ponto, nao consegui achar um jeito ainda
+    for(let i=0; i < 2; i++){
+      this.populacao[this.numPopulacoes][i].map(individuo =>{
+        console.log('individuo 160', i, ' ',individuo )
+          individuo.valor = conversorBinarioToDecimal(individuo.cromossomo)
+          console.log('imprimindo o novo valor', individuo.valor)
+          individuo.aptidao = aptidao(individuo.valor)
+        })
+      }
+        
 
   // Calculo da probabilidade
     let sumFx = 0
@@ -190,7 +202,7 @@ new Genetico();
 
 
 function conversorBinarioToDecimal(binario){
-  
+  console.log('binary',binario)
   let dec = 0;
   for (let c = 0; c < binario.length; c++){
    
@@ -206,6 +218,7 @@ function exec(){
     const genetico = new Genetico();
     let populacao = genetico.gerarPopulacao()
     do {
+      console.log('Passei aqui amigao, essa foi a vez')
       let auxiliar = populacao
       populacao = genetico.novaPopulacao(auxiliar);
       n++;
