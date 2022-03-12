@@ -1,0 +1,33 @@
+h1{
+text-align: center;
+font-size: 2em;
+margin: 1em 0 1em 0;
+}
+
+
+#myDynamicTable {
+    max-width: 100%;
+    margin: 0 5em 0 5em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+table{
+    margin: 1em 3em 0 0;
+    border: 1px ;
+}
+
+caption{
+    font-size: 20px;
+}
+
+
+footer{
+    margin-top: 2em;
+    font-size: 1.5em;
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+  
