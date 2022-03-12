@@ -1,5 +1,5 @@
-const GERACOES = 5;
-const INDIVIDUOS = 4;
+const GERACOES = 20;
+const INDIVIDUOS = 30;
 const TAXA_CROSSOVER = 0.7;
 const TAXA_MUTACAO = 0.01;
 const LIMITE_INFERIOR = -10;
@@ -78,7 +78,7 @@ function novaPopulacao(populacao) {
     novapop.push(new Individuo(val, aptidao(val), aptidao(val) / sumFx));
   }
 
-  novapop.sort((a, b) => b.percSelecao - a.percSelecao);
+  novapop.sort((a, b) => b.aptidao - a.aptidao);
 
   return novapop;
 }
@@ -112,14 +112,14 @@ function gerarPopulacao() {
     );
   }
 
-  populacao.sort((a, b) => b.percSelecao - a.percSelecao);
+  populacao.sort((a, b) => b.aptidao - a.aptidao);
 
   return populacao;
 }
 
 function crossover(pai, mae) {
-  let filho1 = [...pai.cromossomo];
-  let filho2 = [...mae.cromossomo];
+  let filho1 = pai;
+  let filho2 = mae;
   if (Math.random() <= TAXA_CROSSOVER) {
     console.log("CROSSOVER");
     // let filho1 = ["1", "8", "8", "8", "8"];
@@ -167,17 +167,8 @@ function mutacao(param1) {
   return result;
 }
 
-function selecao(populacao) {
-  const pai = torneio(populacao);
-  let mae = torneio(populacao);
-  const filho1 = Object.assign(Object.create(Object.getPrototypeOf(pai)), pai);
-  const filho2 = Object.assign(Object.create(Object.getPrototypeOf(mae)), mae);
-  let cromossomo;
-  do {
-    cromossomo = crossover(pai, mae);
-    filho1.setCromossomo(mutacao(cromossomo.filho1));
-    filho2.setCromossomo(mutacao(cromossomo.filho2));
-  } while (
+function checkValores(filho1, filho2) {
+  return (
     !(
       conversorBinarioToDecimal(filho1.cromossomo) >= -10 &&
       conversorBinarioToDecimal(filho1.cromossomo) <= 10
@@ -187,8 +178,20 @@ function selecao(populacao) {
       conversorBinarioToDecimal(filho2.cromossomo) <= 10
     )
   );
-  // console.log("familia", [pai, mae, filho1, filho2]);
-  return [pai, mae, filho1, filho2];
+}
+
+function selecao(populacao) {
+  const pai = torneio(populacao);
+  let mae = torneio(populacao);
+  const filho1 = Object.assign(Object.create(Object.getPrototypeOf(pai)), pai);
+  const filho2 = Object.assign(Object.create(Object.getPrototypeOf(mae)), mae);
+  let cromossomo;
+  do {
+    cromossomo = crossover([...pai.cromossomo], [...mae.cromossomo]);
+    filho1.setCromossomo(mutacao(cromossomo.filho1));
+    filho2.setCromossomo(mutacao(cromossomo.filho2));
+  } while (checkValores(filho1, filho2));
+  return [...populacao].slice(0, INDIVIDUOS - 2).concat(filho1, filho2);
 }
 
 function exec() {
@@ -215,7 +218,7 @@ exec();
 
 function renderTable(array, n) {
   let divMaster = document.querySelector("#myDynamicTable");
-  console.log(divMaster);
+  // console.log(divMaster);
 
   //retornar uma div
 
@@ -223,7 +226,6 @@ function renderTable(array, n) {
 }
 
 function createTableWithData(array, n) {
-  console.log(array);
   let table = document.createElement("table");
   let caption = document.createElement("caption");
   caption.innerHTML = `Geração ${n}`;
@@ -267,7 +269,7 @@ function createTableWithInformation(element, index) {
   let td3 = document.createElement("td");
   let td4 = document.createElement("td");
 
-  td.innerHTML = index;
+  td.innerHTML = `I${index + 1}`;
   td2.innerHTML = element.valor;
   td3.innerHTML = element.aptidao;
   td4.innerHTML = element.cromossomo.join("");
