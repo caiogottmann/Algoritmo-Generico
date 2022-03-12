@@ -6,6 +6,7 @@ const LIMITE_INFERIOR = -10;
 const LIMITE_SUPERIOR = 10;
 const TAMANHO_BINARIO = 5;
 
+
 function aptidao(x) {
   return Math.pow(x, 2) - 3 * x + 4;
 }
@@ -269,7 +270,7 @@ function createTableWithInformation(element, index) {
   let td3 = document.createElement("td");
   let td4 = document.createElement("td");
 
-  td.innerHTML = `I${index + 1}`;
+  td.innerHTML = `I-${index + 1}`;
   td2.innerHTML = element.valor;
   td3.innerHTML = element.aptidao;
   td4.innerHTML = element.cromossomo.join("");
