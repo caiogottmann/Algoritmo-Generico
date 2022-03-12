@@ -197,36 +197,98 @@ function exec() {
   let arrayPopulation = []
   let populacao = gerarPopulacao()
   arrayPopulation.push(populacao)
-  console.log('1', arrayPopulation[n - 1])
+  //console.log('1', arrayPopulation[n - 1])
 
   do {
     populacao = novaPopulacao(arrayPopulation[n - 1])
     arrayPopulation.push(populacao)
+    renderTable(arrayPopulation[n - 1])
     n++
-    console.log(n, arrayPopulation[n - 1])
+    // console.log(n, arrayPopulation[n - 1])
     // console.log(n);
   } while (n < GERACOES)
+  renderTable(arrayPopulation[n - 1])
   console.log('fim', arrayPopulation)
 }
 
 exec()
 
-function renderTable() {
-  let div = document.querySelector('#myDynamicTable')
-  console.log(div)
+function renderTable(array) {
+  let divMaster = document.querySelector('#myDynamicTable')
+  console.log(divMaster)
 
+  //retornar uma div
+  divMaster.appendChild(createADiv(array))
+}
+
+function createADiv(array) {
+  let div = document.createElement('div')
+  div.appendChild(createTableWithData(array))
+  
+  return div
+}
+
+function createTableWithData(array) {
+  console.log(array)
   let table = document.createElement('table')
   table.style.border = '2px solid black'
+  table.appendChild(headTable())
 
-  let td = document.createElement('td')
-  for (let index = 0; index < 5; index++) {
-    let tr = document.createElement('tr')
-    tr.innerHTML = index
-    td.appendChild(tr)
-  }
-  table.appendChild(td)
+  let tbody = document.createElement('tbody')
+  array.forEach((element,index) => {
+    
+    tbody.appendChild(createTableWithInformation(element,index))
+    
+    
 
-  //div.appendChild(table)
-  document.getElementById('myDynamicTable').appendChild(table)
+  })
+  table.appendChild(tbody)
+
+  return table
 }
+
+function headTable() {
+  let tr = document.createElement('tr')
+
+  let th = document.createElement('th')
+  th.innerHTML = 'Individuo'
+  let th2 = document.createElement('th')
+  th2.innerHTML = 'Valor'
+  let th3 = document.createElement('th')
+  th3.innerHTML = 'F(x)'
+  let th4 = document.createElement('th')
+  th4.innerHTML = 'Cromossomo'
+
+  tr.appendChild(th)
+  tr.appendChild(th2)
+  tr.appendChild(th3)
+  tr.appendChild(th4)
+
+  return tr
+}
+
+function createTableWithInformation(element,index){
+  
+  let tr = document.createElement('tr')
+  let td = document.createElement('td')
+  let td2 = document.createElement('td')
+  let td3 = document.createElement('td')
+  let td4 = document.createElement('td')
+
+  
+  td.innerHTML =index
+  td2.innerHTML = element.valor
+  td3.innerHTML = element.aptidao
+  td4.innerHTML = element.cromossomo.join("")
+  
+  
+    tr.appendChild(td)
+    tr.appendChild(td2)
+    tr.appendChild(td3)
+    tr.appendChild(td4)
+
+    return tr
+}
+
+
 renderTable()
