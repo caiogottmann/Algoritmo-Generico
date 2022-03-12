@@ -80,7 +80,6 @@ function getMelhor(populacao, index1, index2) {
 }
 
 function gerarPopulacao() {
-  //numPopulacoes++;
   let populacao = []
   const valores = []
   let totalFn = 0
@@ -103,7 +102,7 @@ function gerarPopulacao() {
   }
 
   populacao.sort((a, b) => b.percSelecao - a.percSelecao)
-
+  console.log('estou imprimindo aqui pop', populacao)
   return populacao
 }
 
@@ -163,15 +162,14 @@ function exec() {
   let arrayPopulation = []
   let populacao = gerarPopulacao(arrayPopulation)
   arrayPopulation.push(populacao)
-  console.log(arrayPopulation[n - 1])
 
   do {
+    console.log(arrayPopulation[n - 1], ' imprimindo o N:', n - 1)
     populacao = novaPopulacao(arrayPopulation[n - 1])
     arrayPopulation.push(populacao)
     n++
-    console.log(arrayPopulation[n - 1])
     console.log(n)
-  } while (n < GERACOES)
+  } while (n <= GERACOES)
 }
 
 exec()
