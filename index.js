@@ -206,11 +206,11 @@ function exec(){
 
 	  populacao = novaPopulacao(arrayPopulation[n-1]);
 	  arrayPopulation.push(populacao)
-	  console.log(arrayPopulation[n-1])
 	  n++;
+	  console.log(arrayPopulation[n-1])
 	  console.log(n)
 	} while (n < GERACOES);
 }
 
-
   exec()
+  
