@@ -1,216 +1,212 @@
 const GERACOES = 5;
 const INDIVIDUOS = 4;
 const TAXA_CROSSOVER = 0.7;
-const TAXA_MUTACAO = 0.5;
+const TAXA_MUTACAO = 0.01;
 const LIMITE_INFERIOR = -10;
 const LIMITE_SUPERIOR = 10;
 const TAMANHO_BINARIO = 5;
 
 function aptidao(x) {
-  
-  return Math.pow(x, 2) + 3 * x + 4;
+  return Math.pow(x, 2) - 3 * x + 4;
 }
 
 class Individuo {
   constructor(x, aptidao, percSelecao) {
     this.valor = x;
-    this.cromossomo = this.convertToBinary(x);
+    this.cromossomo = convertToBinary(x);
     this.aptidao = aptidao;
     this.percSelecao = percSelecao;
   }
 
-  convertToBinary(number) {
-    let num = Math.abs(number);
-    let binary = (num % 2).toString();
-    while (num > 1) {
-      num = parseInt(num / 2);
-      binary = (num % 2) + binary;
-    }
-    binary = binary.padStart(4, "0");
-    if (number >= 0) binary = `0${binary}`;
-    else binary = `1${binary}`;
-    //console.log(binary.split(""));
-    // console.log(binary);
-    return binary.split("");
+  setCromossomo(cromossomo) {
+    this.cromossomo = cromossomo;
+  }
+
+  setvalorByBinario(binario) {
+    this.valor = conversorBinarioToDecimal(binario);
   }
 }
 
-class Genetico {
-  constructor() {
-    this.numPopulacoes = -1; // não é constante
-    this.populacao = [];    
-  }
-
-  
-}
-
-function conversorBinarioToDecimal(binario){
-  
+function conversorBinarioToDecimal(binario) {
   let dec = 0;
-  let evidencyBit = binario.shift()
-  for (let c = 0; c < binario.length; c++){
-   dec += Math.pow(2, c) * binario[binario.length - c - 1]; //calcula para pegar do último ao primeiro
-   }
+  let evidencyBit = binario.shift();
+  for (let c = 0; c < binario.length; c++) {
+    dec += Math.pow(2, c) * binario[binario.length - c - 1]; //calcula para pegar do último ao primeiro
+  }
 
-   if(evidencyBit == 0){
-	   dec = dec * (-1)
-   }
-   binario.unshift(evidencyBit)
+  if (evidencyBit == 1) dec *= -1;
 
-  
-   return dec
+  binario.unshift(evidencyBit);
+
+  return dec;
 }
 
+function convertToBinary(number) {
+  let num = Math.abs(number);
+  let binary = (num % 2).toString();
+  while (num > 1) {
+    num = parseInt(num / 2);
+    binary = (num % 2) + binary;
+  }
+  binary = binary.padStart(4, "0");
+  if (number >= 0) binary = `0${binary}`;
+  else binary = `1${binary}`;
+  //console.log(binary.split(""));
+  // console.log(binary);
+  return binary.split("");
+}
 
+function novaPopulacao(populacao) {
+  populacao = selecao(populacao);
 
-
-function novaPopulacao(populacao){
-  
-  populacao = selecao(populacao)
-  
+  // console.log("seg", populacao);
   //this.numPopulacoes++;
 
-  let totalFn = 0;
-
- populacao.map(individuo =>{
-	 individuo.valor = conversorBinarioToDecimal(individuo.cromossomo)
-	 individuo.aptidao = aptidao(individuo.valor)
- })   
- 
-
-      
-
-// Calculo da probabilidade
-  let sumFx = 0
-  populacao.map(e =>{
-    sumFx += e.valor
-
-})
-
-populacao.map(e =>{
-  e.percSelecao = e.valor / sumFx
-})
-
-  populacao.sort(
-    (a, b) => b.percSelecao - a.percSelecao
+  const sumFx = populacao.reduce(
+    (previousValue, currentValue) =>
+      previousValue +
+      aptidao(conversorBinarioToDecimal(currentValue.cromossomo)),
+    0
   );
-  
-  return populacao
+
+  // Calculo da probabilidade
+  let val = 0;
+  const novapop = [];
+
+  for (const individuo of populacao) {
+    val = conversorBinarioToDecimal(individuo.cromossomo);
+    novapop.push(new Individuo(val, aptidao(val), aptidao(val) / sumFx));
+  }
+
+  novapop.sort((a, b) => b.percSelecao - a.percSelecao);
+
+  return novapop;
 }
 
-
-
-function getMelhor(populacao,index1, index2) {
-
-  if (
-    populacao[index1].aptidao >=
-    populacao[index2].aptidao
-    )
+function getMelhor(populacao, index1, index2) {
+  if (populacao[index1].aptidao >= populacao[index2].aptidao)
     return populacao[index1];
-    else return populacao[index2];
-  }
-  
+  else return populacao[index2];
+}
 
-  function gerarPopulacao() {
-    //numPopulacoes++;
-	let populacao = []
-    const valores = [];
-    let totalFn = 0;
-    for (let index = 0; index < INDIVIDUOS; index++) {
-      const valorAux = Math.floor(
-        Math.random() * (LIMITE_SUPERIOR - LIMITE_INFERIOR) + LIMITE_INFERIOR
-      );
-      totalFn += aptidao(valorAux);
-      valores.push(valorAux);
-    }
-
-	for(let i = 0; i < valores.length; i++){
-		populacao.push(new Individuo(valores[i], aptidao(valores[i]), aptidao(valores[i]) / totalFn))
-	}
-	
-    populacao.sort(
-		(a, b) => b.percSelecao - a.percSelecao
-		);
-		
-    return populacao
+function gerarPopulacao() {
+  //numPopulacoes++;
+  let populacao = [];
+  const valores = [];
+  let totalFn = 0;
+  for (let index = 0; index < INDIVIDUOS; index++) {
+    const valorAux = Math.floor(
+      Math.random() * (LIMITE_SUPERIOR - LIMITE_INFERIOR) + LIMITE_INFERIOR
+    );
+    totalFn += aptidao(valorAux);
+    valores.push(valorAux);
   }
 
-  function crossover(pai, mae) {
-    let filho1 = pai;
-    let filho2 = mae;
-    // if (Math.random() <= TAXA_CROSSOVER) {
-    const index = Math.floor(Math.random() * TAMANHO_BINARIO + 1);
-    // const arrayAux = filho1.slice(0, 2);
-    //console.log("filho1", filho1);
-    // console.log("arrayAux", arrayAux);
-    // }
-    return { filho1, filho2 };
+  for (let i = 0; i < valores.length; i++) {
+    populacao.push(
+      new Individuo(
+        valores[i],
+        aptidao(valores[i]),
+        aptidao(valores[i]) / totalFn
+      )
+    );
   }
 
-  
-  
+  populacao.sort((a, b) => b.percSelecao - a.percSelecao);
+
+  return populacao;
+}
+
+function crossover(pai, mae) {
+  let filho1 = [...pai.cromossomo];
+  let filho2 = [...mae.cromossomo];
+  if (Math.random() <= TAXA_CROSSOVER) {
+    console.log("CROSSOVER");
+    // let filho1 = ["1", "8", "8", "8", "8"];
+    // let filho2 = ["0", "1", "0", "0", "7"];
+    // const index = Math.floor(Math.random() * (TAMANHO_BINARIO - 1) + 1);
+
+    const index = Math.floor(Math.random() * (TAMANHO_BINARIO - 1));
+    const sliceCross1 = filho1.slice(index);
+    const sliceCross2 = [...filho2].slice(index);
+
+    filho2.splice(index, TAMANHO_BINARIO);
+    filho2 = filho2.concat(sliceCross1);
+    // filho2;
+
+    filho1.splice(index, TAMANHO_BINARIO);
+    filho1 = filho1.concat(sliceCross2);
+  }
+  return { filho1, filho2 };
+}
 
 function torneio(populacao) {
-	
-    const indexEscolha1 = Math.floor(Math.random() * INDIVIDUOS);
-    let indexEscolha2 = 0;
-    do {
-      indexEscolha2 = Math.floor(Math.random() * INDIVIDUOS);
-    } while (indexEscolha1 === indexEscolha2);
-    
-    return getMelhor(populacao,indexEscolha1, indexEscolha2);
-  }
-
-function  mutacao(param1) {
-    let result = [];
-    //Necessário passar um individuo para o método
-    for (let i = 0; i < param1.cromossomo.length; i++) {
-      //if (Math.random() <= 0.01) {
-	
-        if (param1.cromossomo[i] == "1") {
-          result.push("0")
-        } else result.push("1")
-      //}else result.push(param1.cromossomo[i])
-    }
-	
-    return result
-  }
-
-  
-  
-function selecao(populacao) {
-    const pai = torneio(populacao);
-    let mae = {};
-    do {
-      mae = torneio(populacao);
-    } while (pai == mae);
-    
-	
-    const { filho1, filho2 } = crossover(pai, mae);
-    filho1.cromossomo = mutacao(filho1);
-    filho2.cromossomo = mutacao(filho2);
-	//console.log('Filhos modificados',filho1.cromossomo, filho2.cromossomo)
-	return [pai,mae,filho1,filho2]
-
-  }
-  
-function exec(){
-  let n = 1;
-  
-  let arrayPopulation = []
-  let populacao = gerarPopulacao(arrayPopulation)
-  arrayPopulation.push(populacao)
-  console.log(arrayPopulation[n-1])
-
+  const indexEscolha1 = Math.floor(Math.random() * INDIVIDUOS);
+  let indexEscolha2 = 0;
   do {
+    indexEscolha2 = Math.floor(Math.random() * INDIVIDUOS);
+  } while (indexEscolha1 === indexEscolha2);
 
-	  populacao = novaPopulacao(arrayPopulation[n-1]);
-	  arrayPopulation.push(populacao)
-	  n++;
-	  console.log(arrayPopulation[n-1])
-	  console.log(n)
-	} while (n < GERACOES);
+  const melhor = getMelhor(populacao, indexEscolha1, indexEscolha2);
+  return melhor;
 }
 
-  exec()
-  
+function mutacao(param1) {
+  let result = [];
+  //Necessário passar um individuo para o método
+
+  for (let i = 0; i < param1.length; i++) {
+    if (Math.random() <= TAXA_MUTACAO) {
+      console.log("MUTACAO");
+      if (param1[i] == "1") {
+        result.push("0");
+      } else result.push("1");
+    } else result.push(param1[i]);
+  }
+
+  return result;
+}
+
+function selecao(populacao) {
+  const pai = torneio(populacao);
+  let mae = torneio(populacao);
+  const filho1 = Object.assign(Object.create(Object.getPrototypeOf(pai)), pai);
+  const filho2 = Object.assign(Object.create(Object.getPrototypeOf(mae)), mae);
+  let cromossomo;
+  do {
+    cromossomo = crossover(pai, mae);
+    filho1.setCromossomo(mutacao(cromossomo.filho1));
+    filho2.setCromossomo(mutacao(cromossomo.filho2));
+  } while (
+    !(
+      conversorBinarioToDecimal(filho1.cromossomo) >= -10 &&
+      conversorBinarioToDecimal(filho1.cromossomo) <= 10
+    ) ||
+    !(
+      conversorBinarioToDecimal(filho2.cromossomo) >= -10 &&
+      conversorBinarioToDecimal(filho2.cromossomo) <= 10
+    )
+  );
+  // console.log("familia", [pai, mae, filho1, filho2]);
+  return [pai, mae, filho1, filho2];
+}
+
+function exec() {
+  let n = 1;
+
+  let arrayPopulation = [];
+  let populacao = gerarPopulacao();
+  arrayPopulation.push(populacao);
+  console.log("1", arrayPopulation[n - 1]);
+
+  do {
+    populacao = novaPopulacao(arrayPopulation[n - 1]);
+    arrayPopulation.push(populacao);
+    n++;
+    console.log(n, arrayPopulation[n - 1]);
+    // console.log(n);
+  } while (n < GERACOES);
+  console.log("fim", arrayPopulation);
+}
+
+exec();
