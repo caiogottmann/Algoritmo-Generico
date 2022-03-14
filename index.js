@@ -1,5 +1,5 @@
-const GERACOES = 20;
-const INDIVIDUOS = 30;
+const GERACOES = 5;
+const INDIVIDUOS = 4;
 const TAXA_CROSSOVER = 0.7;
 const TAXA_MUTACAO = 0.01;
 const LIMITE_INFERIOR = -10;
