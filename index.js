@@ -6,7 +6,6 @@ const LIMITE_INFERIOR = -10;
 const LIMITE_SUPERIOR = 10;
 const TAMANHO_BINARIO = 5;
 
-
 function aptidao(x) {
   return Math.pow(x, 2) - 3 * x + 4;
 }
@@ -52,16 +51,11 @@ function convertToBinary(number) {
   binary = binary.padStart(4, "0");
   if (number >= 0) binary = `0${binary}`;
   else binary = `1${binary}`;
-  //console.log(binary.split(""));
-  // console.log(binary);
   return binary.split("");
 }
 
 function novaPopulacao(populacao) {
   populacao = selecao(populacao);
-
-  // console.log("seg", populacao);
-  //this.numPopulacoes++;
 
   const sumFx = populacao.reduce(
     (previousValue, currentValue) =>
@@ -70,7 +64,6 @@ function novaPopulacao(populacao) {
     0
   );
 
-  // Calculo da probabilidade
   let val = 0;
   const novapop = [];
 
@@ -91,7 +84,6 @@ function getMelhor(populacao, index1, index2) {
 }
 
 function gerarPopulacao() {
-  //numPopulacoes++;
   let populacao = [];
   const valores = [];
   let totalFn = 0;
@@ -123,9 +115,6 @@ function crossover(pai, mae) {
   let filho2 = mae;
   if (Math.random() <= TAXA_CROSSOVER) {
     console.log("CROSSOVER");
-    // let filho1 = ["1", "8", "8", "8", "8"];
-    // let filho2 = ["0", "1", "0", "0", "7"];
-    // const index = Math.floor(Math.random() * (TAMANHO_BINARIO - 1) + 1);
 
     const index = Math.floor(Math.random() * (TAMANHO_BINARIO - 1));
     const sliceCross1 = filho1.slice(index);
@@ -133,7 +122,6 @@ function crossover(pai, mae) {
 
     filho2.splice(index, TAMANHO_BINARIO);
     filho2 = filho2.concat(sliceCross1);
-    // filho2;
 
     filho1.splice(index, TAMANHO_BINARIO);
     filho1 = filho1.concat(sliceCross2);
@@ -154,7 +142,6 @@ function torneio(populacao) {
 
 function mutacao(param1) {
   let result = [];
-  //Necessário passar um individuo para o método
 
   for (let i = 0; i < param1.length; i++) {
     if (Math.random() <= TAXA_MUTACAO) {
@@ -201,27 +188,19 @@ function exec() {
   let arrayPopulation = [];
   let populacao = gerarPopulacao();
   arrayPopulation.push(populacao);
-  //console.log('1', arrayPopulation[n - 1])
 
   do {
     populacao = novaPopulacao(arrayPopulation[n - 1]);
     arrayPopulation.push(populacao);
     renderTable(arrayPopulation[n - 1], n);
     n++;
-    // console.log(n, arrayPopulation[n - 1])
-    // console.log(n);
   } while (n < GERACOES);
   renderTable(arrayPopulation[n - 1], n);
   console.log("fim", arrayPopulation);
 }
 
-exec();
-
 function renderTable(array, n) {
   let divMaster = document.querySelector("#myDynamicTable");
-  // console.log(divMaster);
-
-  //retornar uma div
 
   divMaster.appendChild(createTableWithData(array, n));
 }
@@ -283,4 +262,4 @@ function createTableWithInformation(element, index) {
   return tr;
 }
 
-renderTable();
+exec();
